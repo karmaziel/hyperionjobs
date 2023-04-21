@@ -28,7 +28,7 @@ CREATE TABLE trabajos (
   ubicacion VARCHAR(225) NOT NULL
 );
 
-CREATE TABLE proy4ectos (
+CREATE TABLE proyectos (
   id_proyecto VARCHAR(10) PRIMARY KEY,
   categoria VARCHAR(50) NOT NULL,
   name_proyecto VARCHAR(50) NOT NULL,
