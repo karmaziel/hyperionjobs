@@ -1,8 +1,8 @@
 const { Decimal128 } = require('mongodb');
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const jobSchema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
-var Job = new Schema({
+var Job = new jobSchema({
     title: {
         type: String
     },
@@ -24,12 +24,13 @@ var Job = new Schema({
     company_logo: {
         type: String
     },
+    publish_date:{
+        type: String
+    },
     dead_line: {
         type: String
     },
 
 })
-  
-User.plugin(passportLocalMongoose);
-  
+
 module.exports = mongoose.model('Job', Job)

@@ -113,6 +113,14 @@
                             </a>
                         </li>
                     </ul>
+                    
+                    <h1>Trabajos</h1>
+                    <ul>
+                        <%jobs.forEach(job => {%>
+                            <p><% description %></p>
+                        <%})%>
+                    </ul>
+                    <!-- 
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             <div class="job-item p-4 mb-4">
@@ -420,7 +428,7 @@
                                         <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Fecha límite: 01 Jan, 2045</small>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <a class="btn btn-primary py-3 px-5" href="">Mostrar más trabajos</a>
                         </div>
                     </div>
