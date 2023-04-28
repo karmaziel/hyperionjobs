@@ -5,6 +5,7 @@ var express = require("express"),
     bodyParser = require("body-parser"),
     LocalStrategy = require("passport-local"),
     passportLocalMongoose = require("passport-local-mongoose")
+    const path = require('path');
 const User = require("./model/User");
 var app = express();
 
@@ -14,6 +15,15 @@ mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.ne
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.set('views', "./views");
+
+app.use('/css',express.static(__dirname +'/css'));
+
+app.use('/img',express.static(__dirname +'/img'));
+
+app.use('/lib',express.static(__dirname +'/lib'));
+app.use('/scss',express.static(__dirname +'/scss'));
+app.use('/js',express.static(__dirname +'/js'));
+
 
 app.use(require("express-session")({
   secret: "Rusty is a dog",
@@ -97,29 +107,29 @@ function isLoggedIn(req, res, next) {
 }
 
 //renderizar página de contacto
-/*app.get("/contact", function (req, res) {
-    res.render("contacto");
-});*/
+app.get("/contact", function (req, res) {
+    res.render("contact");
+});
 
 //renderizar lista de trabajos
-/*app.get("/job-list", function (req, res) {
+app.get("/job-list", function (req, res) {
     res.render("job-list");
-});*/
+});
 
 //renderizar pagina categorias
-/*app.get("/about", function (req, res) {
-    res.render("about");
-});*/
+app.get("/category", function (req, res) {
+    res.render("category");
+});
 
 //renderizar pagina "sobre nosotros"
-/*app.get("/about", function (req, res) {
+app.get("/about", function (req, res) {
     res.render("about");
-});*/
+});
 
 //renderizar pagina de detalles de trabajo
-/*app.get("/job-detail", function (req, res) {
+app.get("/job-detail", function (req, res) {
   res.render("job-detail");
-});*/
+});
 
 //inicializar servidor
 var port = process.env.PORT || 3000;
