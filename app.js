@@ -4,8 +4,7 @@ var express = require("express"),
     passport = require("passport"),
     bodyParser = require("body-parser"),
     LocalStrategy = require("passport-local"),
-    passportLocalMongoose = 
-        require("passport-local-mongoose")
+    passportLocalMongoose = require("passport-local-mongoose")
 const User = require("./model/User");
 var app = express();
 
@@ -94,6 +93,31 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
 }
+
+//renderizar página de contacto
+/*app.get("/contact", function (req, res) {
+    res.render("contacto");
+});*/
+
+//renderizar lista de trabajos
+/*app.get("/job-list", function (req, res) {
+    res.render("job-list");
+});*/
+
+//renderizar pagina categorias
+/*app.get("/about", function (req, res) {
+    res.render("about");
+});*/
+
+//renderizar pagina "sobre nosotros"
+/*app.get("/about", function (req, res) {
+    res.render("about");
+});*/
+
+//renderizar pagina de detalles de trabajo
+/*app.get("/job-detail", function (req, res) {
+  res.render("job-detail");
+});*/
 
 //inicializar servidor
 var port = process.env.PORT || 3000;
