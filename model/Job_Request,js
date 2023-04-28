@@ -20,4 +20,4 @@ var Job_Request = new Schema({
   
 User.plugin(passportLocalMongoose);
   
-module.exports = mongoose.model('Job', Job)
+module.exports = mongoose.model('Job_Request', Job_Request)
