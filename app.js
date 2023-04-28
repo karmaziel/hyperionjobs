@@ -17,13 +17,10 @@ app.set('view engine', 'html');
 app.set('views', "./views");
 
 app.use('/css',express.static(__dirname +'/css'));
-
 app.use('/img',express.static(__dirname +'/img'));
-
 app.use('/lib',express.static(__dirname +'/lib'));
 app.use('/scss',express.static(__dirname +'/scss'));
 app.use('/js',express.static(__dirname +'/js'));
-
 
 app.use(require("express-session")({
   secret: "Rusty is a dog",
@@ -130,6 +127,12 @@ app.get("/about", function (req, res) {
 app.get("/job-detail", function (req, res) {
   res.render("job-detail");
 });
+
+//renderizar pagina de publicar trabajo
+app.get("/publishjob", function (req, res) {
+  res.render("publishjob");
+});
+
 
 //inicializar servidor
 var port = process.env.PORT || 3000;
