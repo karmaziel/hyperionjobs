@@ -1,0 +1,23 @@
+const { Decimal128 } = require('mongodb');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const passportLocalMongoose = require('passport-local-mongoose');
+var Job_Request = new Schema({
+    name: {
+        type: String
+    },
+    email: {
+        type: String
+    },
+    portfolio: {
+        type: String
+    },
+    coverletter: {
+        type: String
+    },
+
+})
+  
+User.plugin(passportLocalMongoose);
+  
+module.exports = mongoose.model('Job', Job)
