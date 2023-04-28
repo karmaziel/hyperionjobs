@@ -11,14 +11,10 @@ var app = express();
 //conectar a base de datos
 mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority");
   
-app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(require("express-session")({
-    secret: "Rusty is a dog",
-    resave: false,
-    saveUninitialized: false
-}));
-  
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.set('views', "./views");
+
 //inicializar passport para autenticar usuarios y contras
 app.use(passport.initialize());
 app.use(passport.session());
@@ -33,7 +29,7 @@ passport.deserializeUser(User.deserializeUser());
   
 // renderizar pagina de inicio
 app.get("/", function (req, res) {
-    res.render("home");
+    res.render("index");
 });
   
 // renderizar pagina de registro
@@ -67,7 +63,7 @@ app.post("/login", async function(req, res){
           const result = req.body.password === user.password;
           // si es correcta regresar a home
           if (result) {
-            res.render("home");
+            res.render("index");
           } else {
             res.status(400).json({ error: "Contraseña incorrecta" });
           }
