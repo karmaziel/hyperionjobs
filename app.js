@@ -15,6 +15,12 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.set('views', "./views");
 
+app.use(require("express-session")({
+  secret: "Rusty is a dog",
+  resave: false,
+  saveUninitialized: false
+}));
+
 //inicializar passport para autenticar usuarios y contras
 app.use(passport.initialize());
 app.use(passport.session());
