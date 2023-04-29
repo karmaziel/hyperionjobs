@@ -25,7 +25,7 @@ collection.find({}).toArray(function(err, jobs) {
   console.log(jobs);
 });
 }); */
-
+/* 
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   var dbo = db.db("test");
@@ -35,10 +35,10 @@ MongoClient.connect(url, function(err, db) {
     db.close();
   });
 });
-
+ */
 //motor de vistas
 app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 app.set('views', "./views");
 
 app.use('/css',express.static(__dirname +'/css'));
@@ -91,10 +91,10 @@ app.get("/contact", function (req, res) {
 });
 
 //renderizar lista de trabajos
-app.get("/job-list", function (req, res) {
+/* app.get("/job-list", function (req, res) {
   res.render("job-list");
 });
-
+ */
 //renderizar pagina categorias
 app.get("/category", function (req, res) {
   res.render("category");
@@ -189,13 +189,17 @@ app.post("/publishjob", async (req, res) => {
 }); 
 
 
-app.get('/job-list', (req, res) => {
-  Job.find({},function(err,jobs){
+app.get('/job-list', async (req, res) => {
+  const modelInstances = await Job.find().exec();
+  console.log(modelInstances)
+/* 
+  await Job.find({}).toArray(function(err,jobs){ */
+ 
     res.render('job-list',{
-      jobsList:jobs
-    })
-  })
-})
+      jobsList:modelInstances
+      })
+/*   }); */
+});
 
 ////////// PUBLICAR TRABAJOS ///////////
 
