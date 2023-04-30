@@ -117,7 +117,12 @@
                     <h1>Trabajos</h1>
                     <ul>
                         <%jobsList.forEach(job => {%>
-                            <p><%= job.description %></p>
+                            <h2><%= job.title %></h2>
+                            <p><b>Descripción: </b><%= job.description %></p>
+                            <p><b>Requerimientos: </b><%= job.requirements %></p>
+                            <p><b>Ubicación: </b><%= job.location %></p>
+                            <p><b>Salario: </b><%= job.salary %></p>
+                            <p><b>Empresa: </b><%= job.company %></p>
                         <%})%>
                     </ul>
                     <!-- 
