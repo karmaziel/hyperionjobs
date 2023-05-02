@@ -124,12 +124,10 @@
                             <p><b>Ubicación: </b><%= job.location %></p>
                             <p><b>Salario: </b><%= job.salary %></p>
                             <p><b>Empresa: </b><%= job.company %></p>
-                            <img src="job.company_logo" width="50" height="50"/>
+                            <img style="border: ridge #00B074 1px;" src="<%= job.company_logo %>" width="100" height="100"></img>
                             <p><b>Fecha límite: </b><%= job.dead_line %></p>
                             <p><a href="job-detail" class="btn btn-primary" role="button">Aplica ahora</a></p>
                         <%})%>
-                        <!-- Etiqueta html en caso de que la Url sea de Internet
-                        <img src=" width="100" height="100"> -->
                     </ul>
                     <!-- 
                     <div class="tab-content">
