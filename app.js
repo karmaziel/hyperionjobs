@@ -201,11 +201,6 @@ app.get('/job-list', async (req, res) => {
 /*   }); */
 });
 
-/////////LISTADO DE TRABAJO
-
-//Boton Aplicar Ahora -- Redirige al formulario de aplicacion
-res.render('job-list', { link: "job-detail"});
-
 ////////// PUBLICAR TRABAJOS ///////////
 
 //inicializar servidor
