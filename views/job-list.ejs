@@ -118,13 +118,13 @@
                     <ul>
                         <%jobsList.forEach(job => {%>
                             <h2><%= job.title %></h2>
-                            <h4>Publicado el <%= job.title %></h4>
+                            <h4>Publicado el <%= job.publish_date %></h4>
                             <p><b>Descripción: </b><%= job.description %></p>
                             <p><b>Requerimientos: </b><%= job.requirements %></p>
                             <p><b>Ubicación: </b><%= job.location %></p>
                             <p><b>Salario: </b><%= job.salary %></p>
                             <p><b>Empresa: </b><%= job.company %></p>
-                            <img src="job.company_logo" width="50" height="50">
+                            <!--<img src="job.company_logo" width="50" height="50">-->
                             <p><b>Fecha límite: </b><%= job.dead_line %></p>
                             <p><a href="job-detail>" class="btn btn-primary" role="button">Aplica ahora</a></p>
                         <%})%>
