@@ -30,6 +30,12 @@
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
 
+    <script>
+        function alertaLogin() {  
+            alert("¡Primero debes registrarte o iniciar sesion!");
+        } 
+    </script> 
+
     <!-- Alerta para login (En caso de ocupar)
     <script>
         function alertaLogin() {  
@@ -72,7 +78,7 @@ onclick="alertaLogin();"
                     </div>
                     <a href="contact" class="nav-item nav-link">Contáctanos</a>
                 </div>
-                <a href="publishjob" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
+                <a href="publishjob" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block" onclick="alertaLogin();">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
         </nav>
         <!-- Navbar End -->
