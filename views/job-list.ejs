@@ -29,6 +29,22 @@
 
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
+
+    <script>
+        function alertaLogin() {  
+            alert("¡Primero debes registrarte o iniciar sesion!");
+        } 
+    </script> 
+    <!-- Alerta para login
+    <script>
+        function alertaLogin() {  
+            alert("¡Primero debes registrarte o iniciar sesion!");
+        } 
+    </script> 
+
+Para añadir, agregar el siguiente evento>
+onclick="alertaLogin();"
+-->
 </head>
 
 <body>
@@ -69,7 +85,7 @@
                     </div>
                     <a href="contact" class="nav-item nav-link">Contáctanos</a>
                 </div>
-                <a href="#" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
+                <a href="#" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block" onclick="alertaLogin();">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
             </div>
         </nav>
         <!-- Navbar End -->
