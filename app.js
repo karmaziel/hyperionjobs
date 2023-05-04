@@ -6,36 +6,21 @@ var express = require("express"),
     LocalStrategy = require("passport-local"),
     passportLocalMongoose = require("passport-local-mongoose")
     const path = require('path');
+    var crypto = require('crypto');
+
 const User = require("./model/User");
 var Job = require("./model/Job");
 const { render } = require("ejs");
 var app = express();
+const { update } = require("./js/auth");
+const router = express.Router()
+const bcrypt = require("bcryptjs")
+
+var loginstatus = false;
 
 //conectar a base de datos
 mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority");
   
-const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority';
-/* const client = new MongoClient(url);
- *//* client.connect(function(err) {
-  console.log("Connected successfully to server");
-  const db = client.db("test");  
-  const collection = db.collection('jobs');
-collection.find({}).toArray(function(err, jobs) {
-  console.log(jobs);
-});
-}); */
-/* 
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  var dbo = db.db("test");
-  dbo.collection("jobs").find({}).toArray(function(err, result) {
-    if (err) throw err;
-    console.log(result);
-    db.close();
-  });
-});
- */
 //motor de vistas
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
@@ -71,7 +56,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // renderizar pagina de inicio
 app.get("/", function (req, res) {
-    res.render("index");
+    res.render("index", {loginstatus:loginstatus});
 });
   
 // renderizar pagina de registro
@@ -110,49 +95,100 @@ app.get("/job-detail", function (req, res) {
 res.render("job-detail");
 });
 
+function loggedIn(req, res, next) {
+  if (loginstatus == true) {
+    next();
+  } 
+  
+  else {
+    res.redirect('/login');
+  }
+}
+
 //renderizar pagina de publicar trabajo
-app.get("/publishjob", function (req, res) {
-res.render("publishjob");
+app.get("/publishjob", loggedIn, (req, res) =>{
+  res.render("publishjob");
+}); 
+
+//renderizar pagina de error
+app.get("/404", function (req, res) {
+  res.render("404");
 });
+
+
 ////////// RUTAS END ///////////
 
 ////////// REGISTRO/LOGIN/LOGOUT ///////////
 
 // registrar usuario y agregar a la bd
 app.post("/registro", async (req, res) => {
-  const user = await User.create({
-    username: req.body.username,
-    password: req.body.password,
-    email: req.body.email,
-    name: req.body.name
-  });
-  res.render("login")
-}); 
+  const { username, password, email, name } = req.body;
+  bcrypt.hash(password, 10).then(async (hash) => {
+    await User.create({
+      username,
+      password: hash,
+      email,
+      name,
+    })
+      .then((user) =>
+        res.status(200).json({
+          message: "Usuario creado",
+           user,
+        })
+      )
+      .catch((error) =>
+        res.status(400).json({
+          message: "Error: Usuario no creado",
+          error: error.message,
+        })
+      );
+    });
+  res.redirect("/login")
+});
+
+
+
 
 // autenticar login
 app.post("/login", async function(req, res){
-    try {
-        // validar si el usuario existe
-        const user = await User.findOne({ username: req.body.username });
-        if (user) {
-          // validar si la contra hace match
-          const result = req.body.password === user.password;
-          // si es correcta regresar a home
-          if (result) {
-            res.render("index");
-          } else {
-            res.status(400).json({ error: "Contraseña incorrecta" });
-          }
-        } else {
-          res.status(400).json({ error: "Usuario no existe" });
-        }
-      } catch (error) {
-        res.status(400).json({ error });
-      }
+  try {
+  const { username, password } = req.body
+  // Check if username and password is provided
+  if (!username || !password) {
+    return res.status(400).json({
+      message: "Username or Password not present",
+    })
+  }
+
+    const user = await User.findOne({ username })
+    if (!user) {
+      res.status(400).json({
+        message: "Login not successful",
+        error: "User not found",
+      })
+    } else {
+      // comparing given password with hashed password
+      bcrypt.compare(password, user.password).then(function (result) {
+        if(result==true)
+        {
+          loginstatus = true;
+          res.redirect("/");
+        } 
+        else
+          res.status(400).json({ message: "Login not succesful" })
+      })
+    }
+  } catch (error) {
+    res.status(400).json({
+      message: "An error occurred",
+      error: error.message,
+    })
+  }
 });
-  
+   
 // cerrar sesion
 app.get("/logout", function (req, res) {
+  loginstatus = false;
     req.logout(function(err) {
         if (err) { return next(err); }
         res.redirect('/');
@@ -160,11 +196,6 @@ app.get("/logout", function (req, res) {
 });
   
   
-// marcar usuario con sesion iniciada
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    res.redirect("/login");
-}
 
 
 ////////// REGISTRO/LOGIN/LOGOUT END ///////////
