@@ -61,7 +61,7 @@ app.get("/", function (req, res) {
   
 // renderizar pagina de registro
 app.get("/registro", function (req, res) {
-    res.render("registro");
+    res.render("registro", {loginstatus:loginstatus});
 });
   
 
@@ -72,7 +72,7 @@ app.get("/login", function (req, res) {
  
 //renderizar página de contacto
 app.get("/contact", function (req, res) {
-  res.render("contact");
+  res.render("contact", {loginstatus:loginstatus});
 });
 
 //renderizar lista de trabajos
@@ -82,17 +82,17 @@ app.get("/contact", function (req, res) {
  */
 //renderizar pagina categorias
 app.get("/category", function (req, res) {
-  res.render("category");
+  res.render("category", {loginstatus:loginstatus});
 });
 
 //renderizar pagina "sobre nosotros"
 app.get("/about", function (req, res) {
-  res.render("about");
+  res.render("about", {loginstatus:loginstatus});
 });
 
 //renderizar pagina de detalles de trabajo
 app.get("/job-detail", function (req, res) {
-res.render("job-detail");
+res.render("job-detail", {loginstatus:loginstatus});
 });
 
 function loggedIn(req, res, next) {
@@ -128,22 +128,22 @@ app.post("/registro", async (req, res) => {
       username,
       password: hash,
       email,
-      name,
+      name
     })
       .then((user) =>
         res.status(200).json({
           message: "Usuario creado",
-           user,
+           user
         })
       )
       .catch((error) =>
         res.status(400).json({
           message: "Error: Usuario no creado",
-          error: error.message,
+          error: error.message
         })
       );
     });
-  res.redirect("/login")
+  res.redirect("/login")  
 });
 
 
@@ -223,13 +223,13 @@ app.post("/publishjob", async (req, res) => {
 app.get('/job-list', async (req, res) => {
   const modelInstances = await Job.find().exec();
   console.log(modelInstances)
-/* 
-  await Job.find({}).toArray(function(err,jobs){ */
- 
+/*   await Job.find({}).toArray(function(err,jobs){ 
+  */
     res.render('job-list',{
-      jobsList:modelInstances
+      jobsList:modelInstances,
+      loginstatus:loginstatus
       })
-/*   }); */
+/*     });  */
 });
 
 ////////// PUBLICAR TRABAJOS ///////////

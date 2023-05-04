@@ -1,5 +1,6 @@
-const User = require("../model/User")
-const app = express()
+/* const User = require("../model/User")
+
+const app = require("express")
 app.use(express.json())
 const bcrypt = require("bcryptjs")
 
@@ -52,4 +53,4 @@ exports.update = async (req, res, next) => {
               .status(400)
               .json({ message: "An error occurred", error: error.message });
           });
-        }}}
+        }}} */

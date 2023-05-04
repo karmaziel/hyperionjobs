@@ -54,7 +54,11 @@
                         <a href="category" class="dropdown-item active">Trabajos por categoría</a>
                     </div>
                 </div>
-                <a href="contact" class="nav-item nav-link">Contáctanos</a>
+                <% if(loginstatus) { %>
+                <a href="logout" class="nav-item nav-link">Cerrar sesion</a>
+                <% } else { %>
+                <a href="login" class="nav-item nav-link">Iniciar sesión</a>
+                <% } %>
             </div>
             <a href="publishjob" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block" onclick="alertaLogin();">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
         </div>
