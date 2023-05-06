@@ -115,6 +115,10 @@ app.get("/404", function (req, res) {
   res.render("404");
 });
 
+//renderizar formulario para aplicar a un trabajo
+app.get("/apply-job",function(req,res) {
+  res.render("apply-job", {loginstatus:loginstatus});
+}); 
 
 ////////// RUTAS END ///////////
 
@@ -195,7 +199,7 @@ app.get("/logout", function (req, res) {
       });
 });
   
-  
+
 
 
 ////////// REGISTRO/LOGIN/LOGOUT END ///////////
