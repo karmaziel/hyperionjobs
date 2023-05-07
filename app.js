@@ -236,6 +236,11 @@ app.get('/job-list', async (req, res) => {
 /*     });  */
 });
 
+//Datos para el formulario de aplicar trabajo
+app.get('/apply-job', async (req, res)=> {
+  //Job.find({_title: req.params.title}).then(function(records){});
+})
+
 ////////// PUBLICAR TRABAJOS ///////////
 
 //inicializar servidor
