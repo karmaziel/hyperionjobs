@@ -1,5 +1,3 @@
-var loginflag=false; //bandera para ver si se ha iniciado sesión
-
 //función que tira la alerta
 function alertLogin()
 {
@@ -7,7 +5,7 @@ function alertLogin()
 }
 
 //condicion de la alerta en caso de que no se haya iniciado sesion
-/*if(loginflag==false)
+/*if(loginstatus==false)
 {
     alertLogin();
 }*/
