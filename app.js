@@ -11,8 +11,10 @@ var User = require("./model/User");
 var Job = require("./model/Job");
 var currentJob = require("./model/Job") 
 const bcrypt = require("bcryptjs")
+var Job_Request = require("./model/Job_Request")
 
 var loginstatus = false;
+
 
 //conectar a base de datos
 mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority");
@@ -68,6 +70,22 @@ app.get("/registro", function (req, res) {
     res.render("registro", {loginstatus:loginstatus});
 });
   
+// renderizar pagina de registro
+app.get("/apply-job/:_id", loggedIn, async function (req, res) {
+    //el id es el del trabajo al que el usuario hizo click en job-list
+    var id = req.params._id;
+    //buscar trabajo por el id 
+    currentJob = await Job.findOne({_id:id}).exec();
+  
+  res.render("apply-job", {
+    loginstatus:loginstatus,
+    job1:currentJob,
+    name:currentUser.name,
+    email:currentUser.email,
+    qualifications:currentUser.qualifications
+  });
+});
+
 
 // renderizar pagina de login
 app.get("/login", function (req, res) {
@@ -105,21 +123,56 @@ app.get("/publishjob", loggedIn, (req, res) =>{
   res.render("publishjob", {loginstatus:loginstatus});
 }); 
 
-//renderizar pagina de publicar trabajo
-app.get("/apply-job/:_id", loggedIn, async (req, res) =>{
+//renderizar pagina para aplicar a trabajo
+app.post("/apply-job/:_id", loggedIn, async (req, res) =>{
   //el id es el del trabajo al que el usuario hizo click en job-list
   var id = req.params._id;
   //buscar trabajo por el id 
-  const model = await Job.findOne({_id:id}).exec();
+  currentJob = await Job.findOne({_id:id}).exec();
+
+
+  //crear solicitud de trabajo
+  var { description, portfolio } = req.body;
+  const request = await Job_Request.create({
+    name:currentUser.name,
+    email:currentUser.email,
+    qualifications:currentUser.qualifications,
+    portfolio,
+    description,
+    job:currentJob,
+    jobId:id
+  })
+
 
   res.render("apply-job", 
   {loginstatus:loginstatus, 
     //mandar valores del trabajo seleccionado al front end
-    job1:model,
+    job1:currentJob,
     //datos del usuario que este loggeado
     name:currentUser.name,
-    email:currentUser.email});  
+    email:currentUser.email,
+    qualifications: currentUser.qualifications,
+    request:request,
+    loginstatus:loginstatus
+  });  
 }); 
+
+//renderizar pagina para ver solicitudes de un trabajo
+
+app.get("/requests/:_id", loggedIn, async (req, res) =>{
+  id = req.params._id;
+  currentJob = await Job.findOne({_id:id}).exec();
+  var requests = await Job_Request.find().exec();
+
+  res.render("requests",
+  {
+    requestList:requests,
+    loginstatus:loginstatus,
+    job:currentJob
+  })
+
+})
+
 
 //renderizar pagina de error
 app.get("/404", function (req, res) {
@@ -241,7 +294,6 @@ app.get('/job-list', async (req, res) => {
       jobsList:modelInstances,
       loginstatus:loginstatus
       })
-/*     });  */
 });
 
 ////////// PUBLICAR TRABAJOS ///////////

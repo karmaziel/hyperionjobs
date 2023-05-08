@@ -1,7 +1,6 @@
 const { Decimal128 } = require('mongodb');
 const mongoose = require('mongoose')
 const jobSchema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
 var Job = new jobSchema({
     title: {
         type: String
