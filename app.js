@@ -9,7 +9,9 @@ var express = require("express"),
     var crypto = require('crypto');
 
 const User = require("./model/User");
+var currentUser = require("./model/User")
 var Job = require("./model/Job");
+var currentJob = require("./model/Job")
 const { render } = require("ejs");
 var app = express();
 const { update } = require("./js/auth");
@@ -51,8 +53,8 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-  
-////////// RUTAS ///////////
+
+///////// RUTAS ///////////
 
 // renderizar pagina de inicio
 app.get("/", function (req, res) {
@@ -75,11 +77,6 @@ app.get("/contact", function (req, res) {
   res.render("contact", {loginstatus:loginstatus});
 });
 
-//renderizar lista de trabajos
-/* app.get("/job-list", function (req, res) {
-  res.render("job-list");
-});
- */
 //renderizar pagina categorias
 app.get("/category", function (req, res) {
   res.render("category", {loginstatus:loginstatus});
@@ -107,19 +104,25 @@ function loggedIn(req, res, next) {
 
 //renderizar pagina de publicar trabajo
 app.get("/publishjob", loggedIn, (req, res) =>{
-  res.render("publishjob");
+  res.render("publishjob", {loginstatus:loginstatus});
+}); 
+
+//renderizar pagina de publicar trabajo
+app.get("/apply-job/:_id", loggedIn, async (req, res) =>{
+  var id = req.params._id;
+  const model = await Job.findOne({_id:id}).exec();
+
+  res.render("apply-job", 
+  {loginstatus:loginstatus, 
+    job1:model,
+    name:currentUser.name,
+    email:currentUser.email});  
 }); 
 
 //renderizar pagina de error
 app.get("/404", function (req, res) {
   res.render("404");
-});
-
-//renderizar formulario para aplicar a un trabajo
-app.get("/apply-job",function(req,res) {
-  res.render("apply-job", {loginstatus:loginstatus});
-}); 
-
+})
 ////////// RUTAS END ///////////
 
 ////////// REGISTRO/LOGIN/LOGOUT ///////////
@@ -164,7 +167,7 @@ app.post("/login", async function(req, res){
     })
   }
 
-    const user = await User.findOne({ username })
+    var user = await User.findOne({ username })
     if (!user) {
       res.status(400).json({
         message: "Login not successful",
@@ -176,6 +179,7 @@ app.post("/login", async function(req, res){
         if(result==true)
         {
           loginstatus = true;
+          currentUser = user;
           res.redirect("/");
         } 
         else

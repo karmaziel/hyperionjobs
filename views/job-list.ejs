@@ -88,7 +88,7 @@
                     </ul>
                     
                     <h1>Trabajos</h1>
-                    <ul>
+                    <ul><% var i = 0 %>
                         <%jobsList.forEach(job => {%>
                             <h2 id="title"><%= job.title %></h2>
                             <h4>Publicado el <%= job.publish_date %></h4>
@@ -99,8 +99,9 @@
                             <p><b>Empresa: </b><%= job.company %></p>
                             <img style="border: ridge #00B074 1px;" src="<%= job.company_logo %>" width="100" height="100"></img>
                             <p><b>Fecha límite: </b><%= job.dead_line %></p>
-                            <p><a href="apply-job" class="btn btn-primary" role="button">Aplica ahora</a></p>
+                            <p><a href="/apply-job/<%= jobsList[i]._id%>" class="btn btn-primary" role="button" class = "<%= jobsList._id%>">Aplica ahora</a></p>
                             <br> <br> <!-- Salto de linea a modo de separador -->
+                            <% i = i+1; %>
                         <%})%>
                     </ul>
                      <!-- 
