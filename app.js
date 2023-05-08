@@ -86,7 +86,7 @@ app.get("/apply-job/:_id", loggedIn, async function (req, res) {
   });
 });
 
-
+ //////
 // renderizar pagina de login
 app.get("/login", function (req, res) {
     res.render("login");
