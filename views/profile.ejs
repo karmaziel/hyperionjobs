@@ -54,58 +54,12 @@
         </div>  
         <!-- Header End -->
         <% if (user) { %>
-        <h2 id="title"><%= job1.title %></h2>
-        <h4>Publicado el <%= job1.publish_date %></h4>
-        <p><b>Descripción: </b><%= job1.description %></p>
-        <p><b>Requerimientos: </b><%= job1.requirements %></p>
-        <p id="location"><b>Ubicación: </b><%= job1.location %></p>
-        <p id="salary"><b>Salario: </b><%= job1.salary %></p>
-        <p><b>Empresa: </b><%= job1.company %></p>
-        <img style="border: ridge #00B074 1px;" src="<%= job1.company_logo %>" width="100" height="100"></img>
-        <p><b>Fecha límite: </b><%= job1.dead_line %></p>
+        <h2 id="title"><%= user.name %></h2>
+        <h4>Usuario: <%= user.username %></h4>
+        <p><b>Habilidades: </b><%= user.qualifications %></p>
+        <p><b>Correo: </b><%= user.email %></p>
         <% } %>
 
-                        <!-- <div class="mb-5">
-                            <h4 class="mb-3">Descripción<nav></nav></h4>
-                            <p>El trabajo consiste en proporcionar dirección, orientación y liderazgo a todo el departamento de marketing. Tiene entre sus funciones la comercialización y promoción de un producto particular o grupo de productos de su empresa</p>
-                            <h4 class="mb-3">Responsabilidades</h4>
-                            <ul class="list-unstyled">
-                                <li><i class="fa fa-angle-right text-primary me-2"></i>Estudiar en profundidad el producto ofertado, su competencia y su mercado.</li>
-                                <li><i class="fa fa-angle-right text-primary me-2"></i>Desarrollar estrategias y acciones de marketing integrales, considerando la creación de valor para el cliente, el comportamiento de compra y la gestión de las relaciones</li>
-                                <li><i class="fa fa-angle-right text-primary me-2"></i>Realizar campañas de mercadotecnia desde su concepción hasta su ejecución</li>
-                                <li><i class="fa fa-angle-right text-primary me-2"></i>Manejar el presupuesto de marketing y asignar los fondos disponibles de forma eficiente.</li>
-                                <li><i class="fa fa-angle-right text-primary me-2"></i>Evaluar e informar del rendimiento de las campañas de mercadotecnia</li>
-                            </ul>-->
-        
-                        <div class="">
-                            <h4 class="mb-4">Aplica para el trabajo</h4>
-                            <form>
-                                <div class="row g-3">
-                                    <div class="col-12 col-sm-6">
-                                        <p>Tus datos:</p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <p>Nombre:<%=name%></p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <p>Correo:<%=email%></p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <input type="text" class="form-control" placeholder="Portafolio (URL)">
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control" rows="5" placeholder="Información adicional, preséntate con la empresa"></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <button class="btn btn-primary w-100" type="submit">Aplicar ahora</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    
-                    </div>
-                </div>
-            </div>
         
 
         <!-- Back to Top -->

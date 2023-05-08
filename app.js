@@ -3,19 +3,13 @@ var express = require("express"),
     mongoose = require("mongoose"),
     passport = require("passport"),
     bodyParser = require("body-parser"),
-    LocalStrategy = require("passport-local"),
-    passportLocalMongoose = require("passport-local-mongoose")
-    const path = require('path');
-    var crypto = require('crypto');
+    LocalStrategy = require("passport-local")
+    currentUser = require("./model/User")
+    app = express();
 
-const User = require("./model/User");
-var currentUser = require("./model/User")
+var User = require("./model/User");
 var Job = require("./model/Job");
-var currentJob = require("./model/Job")
-const { render } = require("ejs");
-var app = express();
-const { update } = require("./js/auth");
-const router = express.Router()
+var currentJob = require("./model/Job") 
 const bcrypt = require("bcryptjs")
 
 var loginstatus = false;
@@ -27,17 +21,14 @@ mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.ne
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', "./views");
-
 app.use('/css',express.static(__dirname +'/css'));
 app.use('/img',express.static(__dirname +'/img'));
 app.use('/lib',express.static(__dirname +'/lib'));
 app.use('/scss',express.static(__dirname +'/scss'));
 app.use('/js',express.static(__dirname +'/js'));
-
 app.use(bodyParser.urlencoded({
   extended: false
 }));
-
 app.use(bodyParser.json());
 
 app.use(require("express-session")({
@@ -49,10 +40,21 @@ app.use(require("express-session")({
 //inicializar passport para autenticar usuarios y contras
 app.use(passport.initialize());
 app.use(passport.session());
-  
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+
+//funcion para verificar que el usuario este loggeado
+function loggedIn(req, res, next) {
+  if (loginstatus == true) {
+    next();
+  } 
+  
+  else {
+    res.redirect('/login');
+  }
+}
 
 ///////// RUTAS ///////////
 
@@ -87,20 +89,16 @@ app.get("/about", function (req, res) {
   res.render("about", {loginstatus:loginstatus});
 });
 
+//renderizar pagina "sobre nosotros"
+app.get("/profile", loggedIn, function (req, res) {
+  res.render("profile", {loginstatus:loginstatus, user:currentUser});
+});
+
 //renderizar pagina de detalles de trabajo
 app.get("/job-detail", function (req, res) {
 res.render("job-detail", {loginstatus:loginstatus});
 });
 
-function loggedIn(req, res, next) {
-  if (loginstatus == true) {
-    next();
-  } 
-  
-  else {
-    res.redirect('/login');
-  }
-}
 
 //renderizar pagina de publicar trabajo
 app.get("/publishjob", loggedIn, (req, res) =>{
@@ -109,12 +107,16 @@ app.get("/publishjob", loggedIn, (req, res) =>{
 
 //renderizar pagina de publicar trabajo
 app.get("/apply-job/:_id", loggedIn, async (req, res) =>{
+  //el id es el del trabajo al que el usuario hizo click en job-list
   var id = req.params._id;
+  //buscar trabajo por el id 
   const model = await Job.findOne({_id:id}).exec();
 
   res.render("apply-job", 
   {loginstatus:loginstatus, 
+    //mandar valores del trabajo seleccionado al front end
     job1:model,
+    //datos del usuario que este loggeado
     name:currentUser.name,
     email:currentUser.email});  
 }); 
@@ -130,12 +132,14 @@ app.get("/404", function (req, res) {
 // registrar usuario y agregar a la bd
 app.post("/registro", async (req, res) => {
   const { username, password, email, name } = req.body;
+  //encriptar contraseña y luego crear usuario
   bcrypt.hash(password, 10).then(async (hash) => {
     await User.create({
       username,
       password: hash,
       email,
-      name
+      name,
+      qualifications
     })
       .then((user) =>
         res.status(200).json({
@@ -160,21 +164,21 @@ app.post("/registro", async (req, res) => {
 app.post("/login", async function(req, res){
   try {
   const { username, password } = req.body
-  // Check if username and password is provided
+  // revisar si ambos el usuario y la contraseña fueron ingresados
   if (!username || !password) {
     return res.status(400).json({
-      message: "Username or Password not present",
+      message: "Falta usuario o contraseña",
     })
   }
 
     var user = await User.findOne({ username })
     if (!user) {
       res.status(400).json({
-        message: "Login not successful",
-        error: "User not found",
+        message: "Sesión no iniciada",
+        error: "Usuario incorrecto",
       })
     } else {
-      // comparing given password with hashed password
+      // comparar la contraseña ingresada con la contraseña encriptada en la bd
       bcrypt.compare(password, user.password).then(function (result) {
         if(result==true)
         {
@@ -183,12 +187,12 @@ app.post("/login", async function(req, res){
           res.redirect("/");
         } 
         else
-          res.status(400).json({ message: "Login not succesful" })
+          res.status(400).json({ message: "Sesión no iniciada" })
       })
     }
   } catch (error) {
     res.status(400).json({
-      message: "An error occurred",
+      message: "Error",
       error: error.message,
     })
   }
@@ -229,21 +233,16 @@ app.post("/publishjob", async (req, res) => {
 
 
 app.get('/job-list', async (req, res) => {
+  //funcion que busca todos los trabajos y los guarda en modelinstances
   const modelInstances = await Job.find().exec();
-  console.log(modelInstances)
-/*   await Job.find({}).toArray(function(err,jobs){ 
-  */
+  
     res.render('job-list',{
+      //mandar valor de modelinstances al front end = todos los trabajos
       jobsList:modelInstances,
       loginstatus:loginstatus
       })
 /*     });  */
 });
-
-//Datos para el formulario de aplicar trabajo
-app.get('/apply-job', async (req, res)=> {
-  //Job.find({_title: req.params.title}).then(function(records){});
-})
 
 ////////// PUBLICAR TRABAJOS ///////////
 
