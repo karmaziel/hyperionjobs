@@ -391,3 +391,32 @@
     padding-right: 0;
     border-right: none;
 }
+
+/*** Company Logo ***/
+.companylogo
+{
+/*** display: block;
+margin: auto; ***/
+border: 5px double #00B074;
+}
+
+/*** Contenedor de Lista***/
+.containerlist
+{
+    padding-top: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    text-align: center;
+    border-style: double;
+    border-color: #00B074;
+}
+
+/*** CContenedor Formulario ***/
+.containerform
+{
+    padding-top: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+}

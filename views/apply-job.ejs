@@ -67,17 +67,74 @@
             </div>
         </div>
         <!-- Header End -->
-        <% if (job1) { %>
-        <h2 id="title"><%= job1.title %></h2>
-        <h4>Publicado el <%= job1.publish_date %></h4>
-        <p><b>Descripción: </b><%= job1.description %></p>
-        <p><b>Requerimientos: </b><%= job1.requirements %></p>
-        <p id="location"><b>Ubicación: </b><%= job1.location %></p>
-        <p id="salary"><b>Salario: </b><%= job1.salary %></p>
-        <p><b>Empresa: </b><%= job1.company %></p>
-        <img style="border: ridge #00B074 1px;" src="<%= job1.company_logo %>" width="100" height="100"></img>
-        <p><b>Fecha límite: </b><%= job1.dead_line %></p> <br>
-        <% } %>
+
+        <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="container">
+                <div class="row gy-5 gx-4">
+                    <div class="col-lg-8">
+                    <div class="d-flex align-items-center mb-5">
+                    <% if (job1) { %>
+                    <img class="flex-shrink-0 img-fluid border rounded" src="<%= job1.company_logo %>" width="90" height="90"></img>
+                    <div class="text-start ps-4">
+                    <h2 class= "mb-3"id="title"><%= job1.title %></h2>
+                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Ubicacion: <%= job1.location %></span>
+                    <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>Publicado el <%= job1.publish_date %></span>
+                </div>
+            </div>
+            <div class="">
+            <h4><b>Descripción: </b></h4>
+            <ul><%= job1.description %></ul>
+            <h4><b>Requerimientos: </b></h4>
+            <ul><%= job1.requirements %></ul>
+            <!--<h4 id="salary"><b>Salario: </b></h4>
+            <ul><%= job1.salary %></ul>
+            <h4><b>Empresa: </b></h4>
+            <ul><%= job1.company %></ul>
+            <h4><b>Fecha límite: </b></h4>
+            <ul><%= job1.dead_line %></ul>-->
+            <% } %>
+        </div>
+        <div class="containerform">
+            <h4 class="mb-4" style="text-align:center;">Aplica para el trabajo</h4>
+            <form id="apply-form" class="form" action="" method="post">
+                <div class="row g-3">
+                    <!-- <div class="mb-4">
+                        <h4 style="text-align:center;">Tus datos:</h4><br>
+                    </div> -->
+                    <div class="col-12 col-sm-6" style="font-size: 20px;">
+                        <p><b>Nombre: </b><%=name%></p>
+                    </div>
+                    <div class="col-12 col-sm-6" style="font-size: 20px;">
+                        <p><b>Correo: </b><%=email%></p>
+                    </div>
+                    <div class="col-12" style="font-size: 20px;">
+                        <p><b>Portafolio: </b><br>
+                        <input type="text" class="form-control" name="portfolio" placeholder="Portafolio (URL)">
+                    </div>
+                    <div class="col-12" style="font-size: 20px;">
+                        <p><b>Comentarios: </b><br>
+                        <textarea class="form-control" rows="5" name="description" placeholder="Información adicional, preséntate con la empresa"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100" type="submit">Aplicar ahora</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
+            <h4 class="mb-4">Detalles del trabajo</h4>
+            <p><i class="fa fa-angle-right text-primary me-2"></i>Publicado el: <%= job1.publish_date %></p>
+            <p><i class="fa fa-angle-right text-primary me-2"></i>Vacante: 1</p>
+            <!-- <p><i class="fa fa-angle-right text-primary me-2"></i>Tipo de Trabajo: Tiempo Completo</p> -->
+            <p><i class="fa fa-angle-right text-primary me-2"></i>Salario: <%= job1.salary %></p>
+            <p><i class="fa fa-angle-right text-primary me-2"></i>Ubicación: <%= job1.location %></p>
+            <p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Fecha límite: <%= job1.dead_line %></p>
+        </div>
+</div>
+</div>
+</div>
 
                         <!-- <div class="mb-5">
                             <h4 class="mb-3">Descripción<nav></nav></h4>
@@ -90,36 +147,6 @@
                                 <li><i class="fa fa-angle-right text-primary me-2"></i>Manejar el presupuesto de marketing y asignar los fondos disponibles de forma eficiente.</li>
                                 <li><i class="fa fa-angle-right text-primary me-2"></i>Evaluar e informar del rendimiento de las campañas de mercadotecnia</li>
                             </ul>-->
-        
-                        <div class="">
-                            <h4 class="mb-4">Aplica para el trabajo</h4>
-                            <form id="apply-form" class="form" action="" method="post">
-                                <div class="row g-3">
-                                    <div class="col-12 col-sm-6">
-                                        <p>Tus datos:</p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <p>Nombre:<%=name%></p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <p>Correo:<%=email%></p><br>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <input type="text" class="form-control" name="portfolio" placeholder="Portafolio (URL)">
-                                    </div>
-                                    <div class="col-12">
-                                        <textarea class="form-control" rows="5" name="description" placeholder="Información adicional, preséntate con la empresa"></textarea>
-                                    </div>
-                                    <div class="col-12">
-                                        <button class="btn btn-primary w-100" type="submit">Aplicar ahora</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    
-                    </div>
-                </div>
-            </div>
         
 
         <!-- Back to Top -->
