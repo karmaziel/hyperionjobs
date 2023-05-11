@@ -29,6 +29,9 @@ var Job = new jobSchema({
     dead_line: {
         type: String
     },
+    published_by: {
+        type: String
+    }
 
 })
 

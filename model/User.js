@@ -19,6 +19,11 @@ var User = new Schema({
     qualifications:{
         type: String
 
+    },
+    role:{
+        type: String,
+        default: "Student",
+        required: true
     }
 
   }

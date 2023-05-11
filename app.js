@@ -11,10 +11,10 @@ var User = require("./model/User");
 var Job = require("./model/Job");
 var currentJob = require("./model/Job") 
 const bcrypt = require("bcryptjs")
-var Job_Request = require("./model/Job_Request")
+var Job_Request = require("./model/Job_Request");
 
 var loginstatus = false;
-
+var currentUserIsAdmin =false;
 
 //conectar a base de datos
 mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority");
@@ -48,7 +48,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //funcion para verificar que el usuario este loggeado
-function loggedIn(req, res, next) {
+function loggedIn (req, res, next) {
   if (loginstatus == true) {
     next();
   } 
@@ -70,7 +70,7 @@ app.get("/registro", function (req, res) {
     res.render("registro", {loginstatus:loginstatus});
 });
   
-// renderizar pagina de registro
+// renderizar pagina de aplicar para un trabajo en especifico
 app.get("/apply-job/:_id", loggedIn, async function (req, res) {
     //el id es el del trabajo al que el usuario hizo click en job-list
     var id = req.params._id;
@@ -163,13 +163,17 @@ app.get("/requests/:_id", loggedIn, async (req, res) =>{
   id = req.params._id;
   currentJob = await Job.findOne({_id:id}).exec();
   var requests = await Job_Request.find().exec();
-
-  res.render("requests",
-  {
-    requestList:requests,
-    loginstatus:loginstatus,
-    job:currentJob
-  })
+  if(currentJob.published_by == currentUser){
+    res.render("requests",
+    {
+      requestList:requests,
+      loginstatus:loginstatus,
+      job:currentJob
+    })
+  }
+  else{
+    res.redirect()
+  }
 
 })
 
@@ -184,7 +188,7 @@ app.get("/404", function (req, res) {
 
 // registrar usuario y agregar a la bd
 app.post("/registro", async (req, res) => {
-  const { username, password, email, name } = req.body;
+  const { username, password, email, name, qualifications, role } = req.body;
   //encriptar contraseña y luego crear usuario
   bcrypt.hash(password, 10).then(async (hash) => {
     await User.create({
@@ -192,20 +196,9 @@ app.post("/registro", async (req, res) => {
       password: hash,
       email,
       name,
-      qualifications
+      qualifications,
+      role
     })
-      .then((user) =>
-        res.status(200).json({
-          message: "Usuario creado",
-           user
-        })
-      )
-      .catch((error) =>
-        res.status(400).json({
-          message: "Error: Usuario no creado",
-          error: error.message
-        })
-      );
     });
   res.redirect("/login")  
 });
@@ -215,7 +208,6 @@ app.post("/registro", async (req, res) => {
 
 // autenticar login
 app.post("/login", async function(req, res){
-  try {
   const { username, password } = req.body
   // revisar si ambos el usuario y la contraseña fueron ingresados
   if (!username || !password) {
@@ -243,13 +235,10 @@ app.post("/login", async function(req, res){
           res.status(400).json({ message: "Sesión no iniciada" })
       })
     }
-  } catch (error) {
-    res.status(400).json({
-      message: "Error",
-      error: error.message,
-    })
+  
+    
   }
-});
+);
    
 // cerrar sesion
 app.get("/logout", function (req, res) {
@@ -278,7 +267,8 @@ app.post("/publishjob", async (req, res) => {
     company: req.body.company,
     company_logo: req.body.company_logo,
     publish_date: req.body.publish_date,
-    dead_line: req.body.dead_line
+    dead_line: req.body.dead_line,
+    published_by: currentUser
   });
 
   res.redirect("/job-list");
@@ -298,6 +288,60 @@ app.get('/job-list', async (req, res) => {
 
 ////////// PUBLICAR TRABAJOS ///////////
 
+////////// ACTIVIDADES DE ADMINISTRADOR /////////
+
+//verificar si usuario es admin
+function isAdmin (req,res,next){
+  if(currentUser.role == "admin"){
+    currentUserIsAdmin = true;
+    next();
+  }
+  else{
+    res.redirect('no-permission');
+  }
+}
+
+app.get("/no-permission", function (req, res) {
+  res.render("no-permission", {loginstatus:loginstatus});
+});
+
+
+//ver lista de usuarios
+app.get('/users', isAdmin,async (req, res) => {
+  const userList = await User.find().exec();
+    res.render('users',{
+    //mandar valores al front end 
+    loginstatus:loginstatus,
+    userList:userList,
+    currentUserIsAdmin:currentUserIsAdmin
+    })
+});
+
+// borrar usuario
+app.get('/delete-user', isAdmin, async (req, res) => {
+    res.render('delete-user',{
+      //mandar valores al front end 
+      isAdmin:currentUserIsAdmin,
+      loginstatus:loginstatus
+      })
+});
+
+
+async function delUser (req, res, next) {
+  const { id } = req.body
+  const deletingUser = await User.findById(id)
+    .then(deletingUser => deletingUser.remove())
+    .then(deletingUser =>
+      res.status(201).json({ message: "Usuario borrado", user })
+    )
+    .catch(error =>
+      res
+        .status(400)
+        .json({ message: "Ha ocurrido un error", error: error.message })
+    )
+}
+
+  
 //inicializar servidor
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
