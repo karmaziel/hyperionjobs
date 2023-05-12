@@ -21,6 +21,10 @@ var Job_Request = new Schema({
     },
     jobId: {
         type: String
+    },
+    requestAccepted:{
+        type: String,
+        default: "Pendiente"
     }
 
 })

@@ -60,7 +60,14 @@
         <p><b>Correo: </b><%= user.email %></p>
         <% } %>
 
-        
+        <% if(user.role=="company") { %>
+        <p><a href="/job-list/<%= user._id%>" class="btn btn-primary" role="button">Ver mis trabajos publicados</a></p>
+        <p><a href="/allrequests/<%= user._id%>" class="btn btn-primary" role="button">Ver mis solicitudes recibidas</a></p>
+        <% } else if(user.role=="student") { %>
+        <p><a href="/job-list/<%= user._id%>" class="btn btn-primary" role="button">Ver trabajos a los que he aplicado</a></p>
+        <% } %>
+
+
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

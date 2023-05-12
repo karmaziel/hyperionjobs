@@ -84,14 +84,13 @@
                     <ul><% var i = 0 %>
                         <% var job %>
                         <%requestList.forEach(request => {%>
-                            <h2 id="title"><%= job.title %></h2>
+                            <h2 id="title"><%= request.job %></h2>
                             <p><b>Nombre: </b><%= request.name %></p>
                             <p><b>Descripción: </b><%= request.description %></p>
                             <p><b>Correo electronico: </b><%= request.email %></p>
                             <p><b>Habilidades: </b><%= request.qualifications %></p>
-                            <p><a href="/accept" class="btn btn-primary" role="button" >Aceptar</a></p>
-                            <p><a href="/reject" class="btn btn-primary" role="button" >Rechazar</a></p>
-
+                            <p><a href="/accept/<%= request._id %>" class="btn btn-primary" role="button" >Aceptar</a></p>
+                            <p><a href="/reject/<%= request._id %>" class="btn btn-primary" role="button" >Rechazar</a></p>
                             <br> <br> <!-- Salto de linea a modo de separador -->
                             <% i = i+1; %>
                         <%})%>

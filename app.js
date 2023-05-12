@@ -15,6 +15,9 @@ var Job_Request = require("./model/Job_Request");
 
 var loginstatus = false;
 var currentUserIsAdmin =false;
+var currentUserIsCompany =false;
+var currentUserIsStudent =false;
+
 
 //conectar a base de datos
 mongoose.connect("mongodb+srv://karmashiota:gayouma420@cluster0.dsxcl.mongodb.net/?retryWrites=true&w=majority");
@@ -69,24 +72,8 @@ app.get("/", function (req, res) {
 app.get("/registro", function (req, res) {
     res.render("registro", {loginstatus:loginstatus});
 });
-  
-// renderizar pagina de aplicar para un trabajo en especifico
-app.get("/apply-job/:_id", loggedIn, async function (req, res) {
-    //el id es el del trabajo al que el usuario hizo click en job-list
-    var id = req.params._id;
-    //buscar trabajo por el id 
-    currentJob = await Job.findOne({_id:id}).exec();
-  
-  res.render("apply-job", {
-    loginstatus:loginstatus,
-    job1:currentJob,
-    name:currentUser.name,
-    email:currentUser.email,
-    qualifications:currentUser.qualifications
-  });
-});
 
- //////
+
 // renderizar pagina de login
 app.get("/login", function (req, res) {
     res.render("login");
@@ -95,11 +82,6 @@ app.get("/login", function (req, res) {
 //renderizar página de contacto
 app.get("/contact", function (req, res) {
   res.render("contact", {loginstatus:loginstatus});
-});
-
-//renderizar pagina categorias
-app.get("/category", function (req, res) {
-  res.render("category", {loginstatus:loginstatus});
 });
 
 //renderizar pagina "sobre nosotros"
@@ -112,19 +94,10 @@ app.get("/profile", loggedIn, function (req, res) {
   res.render("profile", {loginstatus:loginstatus, user:currentUser});
 });
 
-//renderizar pagina de detalles de trabajo
-app.get("/job-detail", function (req, res) {
-res.render("job-detail", {loginstatus:loginstatus});
-});
 
-
-//renderizar pagina de publicar trabajo
-app.get("/publishjob", loggedIn, (req, res) =>{
-  res.render("publishjob", {loginstatus:loginstatus});
-}); 
 
 //renderizar pagina para aplicar a trabajo
-app.post("/apply-job/:_id", loggedIn, async (req, res) =>{
+app.post("/apply-job/:_id", isStudent, async (req, res) =>{
   //el id es el del trabajo al que el usuario hizo click en job-list
   var id = req.params._id;
   //buscar trabajo por el id 
@@ -139,8 +112,9 @@ app.post("/apply-job/:_id", loggedIn, async (req, res) =>{
     qualifications:currentUser.qualifications,
     portfolio,
     description,
-    job:currentJob,
-    jobId:id
+    job:currentJob.title,
+    jobId:id,
+    requestAccepted:"Pending"
   })
 
 
@@ -156,27 +130,6 @@ app.post("/apply-job/:_id", loggedIn, async (req, res) =>{
     loginstatus:loginstatus
   });  
 }); 
-
-//renderizar pagina para ver solicitudes de un trabajo
-
-app.get("/requests/:_id", loggedIn, async (req, res) =>{
-  id = req.params._id;
-  currentJob = await Job.findOne({_id:id}).exec();
-  var requests = await Job_Request.find().exec();
-  if(currentJob.published_by == currentUser){
-    res.render("requests",
-    {
-      requestList:requests,
-      loginstatus:loginstatus,
-      job:currentJob
-    })
-  }
-  else{
-    res.redirect()
-  }
-
-})
-
 
 //renderizar pagina de error
 app.get("/404", function (req, res) {
@@ -204,8 +157,6 @@ app.post("/registro", async (req, res) => {
 });
 
 
-
-
 // autenticar login
 app.post("/login", async function(req, res){
   const { username, password } = req.body
@@ -229,7 +180,20 @@ app.post("/login", async function(req, res){
         {
           loginstatus = true;
           currentUser = user;
+          if(user.role=="admin"){
+            currentUserIsAdmin = true;
+          }
+          else if(user.role=="company"){
+            currentUserIsCompany = true;
+          }
+          else if(user.role=="student"){
+            currentUserIsStudent = true;
+          }
           res.redirect("/");
+          console.log(currentUserIsAdmin)
+          console.log(currentUserIsCompany)
+          console.log(currentUserIsStudent)
+
         } 
         else
           res.status(400).json({ message: "Sesión no iniciada" })
@@ -254,10 +218,54 @@ app.get("/logout", function (req, res) {
 
 ////////// REGISTRO/LOGIN/LOGOUT END ///////////
 
+////////// ACTIVIDADES DE ESTUDIANTES  ///////////
+//confirmar si el usuario es estudiante
+function isStudent (req,res,next){
+  if(currentUser.role == "student"||currentUser.role == "admin"){
+    currentUserIsStudent = true;
+    next();
+  }
+  else{
+    res.redirect('/no-permission');
+  }
+}
 
-////////// PUBLICAR TRABAJOS  ///////////
+// renderizar pagina de aplicar para un trabajo en especifico
+app.get("/apply-job/:_id", isStudent, async function (req, res) {
+    //el id es el del trabajo al que el usuario hizo click en job-list
+    var id = req.params._id;
+    //buscar trabajo por el id 
+    currentJob = await Job.findById({_id:id}).exec();
+  
+  res.render("apply-job", {
+    loginstatus:loginstatus,
+    job1:currentJob,
+    name:currentUser.name,
+    email:currentUser.email,
+    qualifications:currentUser.qualifications
+  });
+});
 
-app.post("/publishjob", async (req, res) => {
+
+////////// ACTIVIDADES DE EMPRESAS  ///////////
+
+
+function isCompany (req,res,next){
+  if(currentUser.role == "company"||currentUserIsAdmin){
+    currentUserIsCompany = true;
+    next();
+  }
+  else{
+    res.redirect('/no-permission');
+  }
+}
+
+//renderizar pagina de publicar trabajo
+app.get("/publishjob", isCompany, (req, res) =>{
+  res.render("publishjob", {loginstatus:loginstatus});
+}); 
+//mandar datos de trabajo a la bd
+app.post("/publishjob", isCompany,async (req, res) => {
   const job = await Job.create({
     title: req.body.title,
     description: req.body.description,
@@ -268,7 +276,7 @@ app.post("/publishjob", async (req, res) => {
     company_logo: req.body.company_logo,
     publish_date: req.body.publish_date,
     dead_line: req.body.dead_line,
-    published_by: currentUser
+    published_by: currentUser._id
   });
 
   res.redirect("/job-list");
@@ -278,15 +286,119 @@ app.post("/publishjob", async (req, res) => {
 app.get('/job-list', async (req, res) => {
   //funcion que busca todos los trabajos y los guarda en modelinstances
   const modelInstances = await Job.find().exec();
-  
     res.render('job-list',{
       //mandar valor de modelinstances al front end = todos los trabajos
       jobsList:modelInstances,
-      loginstatus:loginstatus
+      loginstatus:loginstatus,
+      user:currentUser,
+      isCompany:currentUserIsCompany,
+      isStudent:currentUserIsStudent,
+      isAdmin:currentUserIsAdmin
       })
 });
 
-////////// PUBLICAR TRABAJOS ///////////
+app.post('/update-job/:_id',isCompany,async(req,res)=>{
+  const id = req.params._id
+  var updatingJob = await Job.findById(id).exec();
+
+  const{title,description,requirements,location,salary,company_logo,publish_date,dead_line} = req.body;
+  await Job.findOneAndUpdate({_id:id},
+    {$set:{title:title,
+      description:description,
+      requirements:requirements,
+      location:location,
+      salary:salary,
+      company_logo:company_logo,
+      publish_date:publish_date,
+      dead_line:dead_line }}
+    )
+    updatingJob = await Job.findById(id).exec();
+    res.render('update-job',{
+      loginstatus:loginstatus,
+      currentUserIsAdmin:currentUserIsAdmin,
+      currentUserIsCompany:currentUserIsCompany,
+      currentUserIsStudent:currentUserIsStudent,
+      job:updatingJob
+    })
+  
+}); 
+
+app.get('/update-job/:_id',isCompany,async(req,res)=>{
+  const id = req.params._id
+  const updatingJob = await Job.findById(id).exec();
+
+  res.render('update-job',{loginstatus:loginstatus,
+    currentUserIsAdmin:currentUserIsAdmin,
+    currentUserIsCompany:currentUserIsCompany,
+    currentUserIsStudent:currentUserIsStudent,
+    job:updatingJob  
+  })
+});
+
+app.get("/update-job", isAdmin,function (req, res,next) {
+  
+  res.render("update-job", {isAdmin:currentUserIsAdmin,loginstatus:loginstatus});
+});
+
+
+  // ver trabajos publicados por la empresa actual 
+app.get('/job-list/:_id', isCompany, async (req, res) => {
+  //funcion que busca todos los trabajos del usuario actual y los guarda en modelinstances
+  const id = req.params._id
+  const postedjobs = await Job.find({published_by:id}).exec();
+  console.log(currentUserIsAdmin)
+  console.log(currentUserIsCompany)
+  console.log(currentUserIsStudent)
+
+    res.render('job-list',{
+      //mandar valor de modelinstances al front end = todos los trabajos
+      jobsList:postedjobs,
+      loginstatus:loginstatus,
+      user:currentUser,
+      isCompany:currentUserIsCompany,
+      isStudent:currentUserIsStudent,
+      isAdmin:currentUserIsAdmin
+      })
+});
+
+//renderizar pagina para ver todas las solicitudes que ha publicado un usuario
+
+app.get('/allrequests/:_id', isCompany,async (req, res) => {
+  //funcion que busca todos los trabajos del usuario actual y los guarda en modelinstances
+  const id = req.params._id
+  const allRequests = await Job_Request.find({published_by:id}).exec();
+  const postedjobs = await Job.find({published_by:id}).exec();
+  const jobId = postedjobs._id
+
+    res.render('requests',{
+      //mandar valor de modelinstances al front end = todos los trabajos
+      requestList:allRequests,
+      loginstatus:loginstatus,
+      job:postedjobs
+      })
+});
+
+//renderizar pagina para ver solicitudes de un trabajo
+
+app.get("/requests/:_id", isCompany, async (req, res) =>{
+  id = req.params._id;
+  currentJob = await Job.findOne({_id:id}).exec();
+  var requests = await Job_Request.find({jobId:id}).exec();
+  if(currentJob.published_by == currentUser._id){
+    res.render("requests",
+    {
+      requestList:requests,
+      loginstatus:loginstatus,
+      job:currentJob
+    })
+  }
+  else{
+    res.redirect('/no-permission')
+  }
+
+})
+
+
 
 ////////// ACTIVIDADES DE ADMINISTRADOR /////////
 
@@ -297,7 +409,7 @@ function isAdmin (req,res,next){
     next();
   }
   else{
-    res.redirect('no-permission');
+    res.redirect('/no-permission')
   }
 }
 
@@ -318,30 +430,63 @@ app.get('/users', isAdmin,async (req, res) => {
 });
 
 // borrar usuario
-app.get('/delete-user', isAdmin, async (req, res) => {
+app.get('/delete-user/:_id', isAdmin, async (req, res) => {
+
+    const id = req.body.params
+    const deletingUser = await User.findOneAndRemove(id)
+  
     res.render('delete-user',{
       //mandar valores al front end 
       isAdmin:currentUserIsAdmin,
-      loginstatus:loginstatus
+      loginstatus:loginstatus,
+      deletingUser:deletingUser
       })
 });
 
+app.get("/delete-user", isAdmin,function (req, res) {
+  res.render("delete-user", {loginstatus:loginstatus});
+});
 
-async function delUser (req, res, next) {
-  const { id } = req.body
-  const deletingUser = await User.findById(id)
-    .then(deletingUser => deletingUser.remove())
-    .then(deletingUser =>
-      res.status(201).json({ message: "Usuario borrado", user })
-    )
-    .catch(error =>
-      res
-        .status(400)
-        .json({ message: "Ha ocurrido un error", error: error.message })
-    )
-}
+app.post("/update-user/:_id",isAdmin, async(req,res)=>{
+  const id = req.params._id
+  var updatingUser = await User.findById(id).exec();
 
+  const { username, password, name, role } = req.body;
+  bcrypt.hash(password, 10).then(async (hash) => {
+    await User.findOneAndUpdate({_id:id},
+      {$set:{username:username,
+      password: hash,
+      name:name,
+      role:role}}
+    )
+  })
+
+  updatingUser = await User.findById(id).exec();
   
+
+  res.render('update-user',{
+    isAdmin:currentUserIsAdmin,
+    loginstatus:loginstatus,
+    user:updatingUser
+  })
+});
+
+app.get('/update-user/:_id',isAdmin, async(req,res)=>{
+  const id = req.params._id
+  const updatingUser = await User.findById(id).exec();
+
+  res.render('update-user',{
+    isAdmin:currentUserIsAdmin,
+    loginstatus:loginstatus,
+    user:updatingUser
+  })
+});
+
+app.get("/update-user", isAdmin,function (req, res,next) {
+  
+  res.render("update-user", {isAdmin:currentUserIsAdmin,loginstatus:loginstatus});
+});
+
 //inicializar servidor
 var port = process.env.PORT || 3000;
 app.listen(port, function () {

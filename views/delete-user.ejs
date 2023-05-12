@@ -47,26 +47,20 @@
                     <ol class="breadcrumb text-uppercase">
                         <li class="breadcrumb-item"><a href="#">Página Principal</a></li>
                         <li class="breadcrumb-item"><a href="#">Páginas</a></li>
-                        <li class="breadcrumb-item text-white active" aria-current="page">Lista de usuarios</li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Usuario borrado</li>
                     </ol>
                 </nav>
             </div>
         </div>  
         <!-- Header End -->
-        <% var i = 0 %>
-        <%userList.forEach(user => {%>
-        <h2 id="title"><%= user.name %></h2>
-        <h4>Usuario: <%= user.username %></h4>
-        <p><b>Habilidades: </b><%= user.qualifications %></p>
-        <p><b>Correo: </b><%= user.email %></p>
-        <p><b>Rol: </b><%= user.role %></p>
-        <p><a href="/delete-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Borrar usuario</a></p>
-        <p><a href="/update-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Actualizar usuario</a></p>
-        <% i = i+1; %>
 
-        <% }) %>
-
-        
+        <h1>Usuario borrado</h1>
+        <p>El siguiente usuario ha sido borrado:</p>
+        <p>Nombre: <%=deletingUser.name%></p>
+        <p>Tipo de cuenta: <%=deletingUser.role%></p>
+        <p>ID de cuenta: <%=deletingUser._id%></p>
+        <p>Nombre de usuario: <%=deletingUser.username%></p>
+        <p>Correo: <%=deletingUser.email%></p>
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
