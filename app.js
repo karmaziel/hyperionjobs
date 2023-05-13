@@ -65,7 +65,7 @@ function loggedIn (req, res, next) {
 
 // renderizar pagina de inicio
 app.get("/", function (req, res) {
-    res.render("index", {loginstatus:loginstatus});
+    res.render("index", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 });
   
 // renderizar pagina de registro
@@ -81,17 +81,17 @@ app.get("/login", function (req, res) {
  
 //renderizar página de contacto
 app.get("/contact", function (req, res) {
-  res.render("contact", {loginstatus:loginstatus});
+  res.render("contact", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 });
 
 //renderizar pagina "sobre nosotros"
 app.get("/about", function (req, res) {
-  res.render("about", {loginstatus:loginstatus});
+  res.render("about", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 });
 
-//renderizar pagina "sobre nosotros"
+//renderizar pagina de perfil de usuario
 app.get("/profile", loggedIn, function (req, res) {
-  res.render("profile", {loginstatus:loginstatus, user:currentUser});
+  res.render("profile", {loginstatus:loginstatus, user:currentUser,isAdmin:currentUserIsAdmin});
 });
 
 
@@ -127,7 +127,7 @@ app.post("/apply-job/:_id", isStudent, async (req, res) =>{
     email:currentUser.email,
     qualifications: currentUser.qualifications,
     request:request,
-    loginstatus:loginstatus
+    loginstatus:loginstatus,isAdmin:currentUserIsAdmin
   });  
 }); 
 
@@ -190,9 +190,6 @@ app.post("/login", async function(req, res){
             currentUserIsStudent = true;
           }
           res.redirect("/");
-          console.log(currentUserIsAdmin)
-          console.log(currentUserIsCompany)
-          console.log(currentUserIsStudent)
 
         } 
         else
@@ -209,6 +206,9 @@ app.get("/logout", function (req, res) {
   loginstatus = false;
     req.logout(function(err) {
         if (err) { return next(err); }
+        currentUserIsAdmin = false;
+        currentUserIsCompany = false;
+        currentUserIsStudent = false;
         res.redirect('/');
       });
 });
@@ -242,7 +242,7 @@ app.get("/apply-job/:_id", isStudent, async function (req, res) {
     job1:currentJob,
     name:currentUser.name,
     email:currentUser.email,
-    qualifications:currentUser.qualifications
+    qualifications:currentUser.qualifications,isAdmin:currentUserIsAdmin
   });
 });
 
@@ -262,7 +262,7 @@ function isCompany (req,res,next){
 
 //renderizar pagina de publicar trabajo
 app.get("/publishjob", isCompany, (req, res) =>{
-  res.render("publishjob", {loginstatus:loginstatus});
+  res.render("publishjob", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 }); 
 //mandar datos de trabajo a la bd
 app.post("/publishjob", isCompany,async (req, res) => {
@@ -318,7 +318,7 @@ app.post('/update-job/:_id',isCompany,async(req,res)=>{
       currentUserIsAdmin:currentUserIsAdmin,
       currentUserIsCompany:currentUserIsCompany,
       currentUserIsStudent:currentUserIsStudent,
-      job:updatingJob
+      job:updatingJob,isAdmin:currentUserIsAdmin
     })
   
 }); 
@@ -331,11 +331,11 @@ app.get('/update-job/:_id',isCompany,async(req,res)=>{
     currentUserIsAdmin:currentUserIsAdmin,
     currentUserIsCompany:currentUserIsCompany,
     currentUserIsStudent:currentUserIsStudent,
-    job:updatingJob  
+    job:updatingJob  ,isAdmin:currentUserIsAdmin
   })
 });
 
-app.get("/update-job", isAdmin,function (req, res,next) {
+app.get("/update-job", isCompany,function (req, res,next) {
   
   res.render("update-job", {isAdmin:currentUserIsAdmin,loginstatus:loginstatus});
 });
@@ -374,7 +374,7 @@ app.get('/allrequests/:_id', isCompany,async (req, res) => {
       //mandar valor de modelinstances al front end = todos los trabajos
       requestList:allRequests,
       loginstatus:loginstatus,
-      job:postedjobs
+      job:postedjobs,isAdmin:currentUserIsAdmin
       })
 });
 
@@ -389,7 +389,7 @@ app.get("/requests/:_id", isCompany, async (req, res) =>{
     {
       requestList:requests,
       loginstatus:loginstatus,
-      job:currentJob
+      job:currentJob,isAdmin:currentUserIsAdmin
     })
   }
   else{
@@ -414,7 +414,7 @@ function isAdmin (req,res,next){
 }
 
 app.get("/no-permission", function (req, res) {
-  res.render("no-permission", {loginstatus:loginstatus});
+  res.render("no-permission", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 });
 
 
@@ -425,7 +425,7 @@ app.get('/users', isAdmin,async (req, res) => {
     //mandar valores al front end 
     loginstatus:loginstatus,
     userList:userList,
-    currentUserIsAdmin:currentUserIsAdmin
+    currentUserIsAdmin:currentUserIsAdmin,isAdmin:currentUserIsAdmin
     })
 });
 
@@ -439,12 +439,12 @@ app.get('/delete-user/:_id', isAdmin, async (req, res) => {
       //mandar valores al front end 
       isAdmin:currentUserIsAdmin,
       loginstatus:loginstatus,
-      deletingUser:deletingUser
+      deletingUser:deletingUser,isAdmin:currentUserIsAdmin
       })
 });
 
 app.get("/delete-user", isAdmin,function (req, res) {
-  res.render("delete-user", {loginstatus:loginstatus});
+  res.render("delete-user", {loginstatus:loginstatus,isAdmin:currentUserIsAdmin});
 });
 
 app.post("/update-user/:_id",isAdmin, async(req,res)=>{

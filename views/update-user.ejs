@@ -29,6 +29,7 @@
 
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 <script>
     src="../js/search";
@@ -40,7 +41,7 @@
         <%- include("partials/navbar") %>
 
         <!-- Header End -->
-        <div class="container-xxl py-5 bg-dark page-header mb-5">
+        <div class="w3-container py-5 bg-dark page-header mb-5">
             <div class="container my-5 pt-5 pb-4">
                 <h1 class="display-3 text-white mb-3 animated slideInDown">Perfil</h1>
                 <nav aria-label="breadcrumb">
@@ -53,44 +54,47 @@
             </div>
         </div>  
         <!-- Header End -->
-
-        <form id="update-form" class="form" action="/update-user/<%=user._id%>" method="post">
-            <h3 class="text-center text-info">Actualizar usuario</h3>
-            <div class="form-group">
-                <label for="name" class="text-info">Nombre: </label><br>
-                <input type="text" name="name" id="name" value="<%= user.name %>" placeholder="<%= user.name %>" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="username" class="text-info">Usuario:</label><br>
-                <input type="text" name="username" id="username" value="<%= user.username %>" placeholder="<%= user.username %>" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="password" class="text-info">Contraseña:</label><br>
-                <input type="password" name="password" id="password" value="<%= user.password %>" class="form-control">
-            </div>
-            <div>
-                <label for="role" class="text-info">Rol:</label><br>
-                <p class="role">
-                    <select name="role" placeholder="<%= user.role %>" value="<%= user.role %>">
-                        <option value="student">Estudiante</option>
-                        <option value="company">Compañía</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </p>
-            </div>
-            <div class="form-group">
-                <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
-            </div>
-
+        <div class="w3-container w3-white w3-half w3-center w3-auto" style="margin:auto">
+            <form id="update-form" class="form" action="/update-user/<%=user._id%>" method="post">
+                <h3 class="text-center text-info">Actualizar usuario</h3>
+                <div class="form-group">
+                    <label for="name" class="text-info">Nombre: </label><br>
+                    <input type="text" name="name" id="name" value="<%= user.name %>" placeholder="<%= user.name %>" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="username" class="text-info">Usuario:</label><br>
+                    <input type="text" name="username" id="username" value="<%= user.username %>" placeholder="<%= user.username %>" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="text-info">Contraseña:</label><br>
+                    <input type="password" name="password" id="password" value="<%= user.password %>" class="form-control">
+                </div>
+                <div>
+                    <label for="role" class="text-info">Rol:</label><br>
+                    <p class="role">
+                        <select name="role" placeholder="<%= user.role %>" value="<%= user.role %>">
+                            <option value="student">Estudiante</option>
+                            <option value="company">Compañía</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                </div>
     
-        </form>
+        
+            </form>
+        </div>
+
 
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <%- include("partials/footer") %>
+    <div class="w3-container"><%- include("partials/footer") %>
+    </div>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

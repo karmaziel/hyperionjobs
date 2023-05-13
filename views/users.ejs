@@ -29,6 +29,8 @@
 
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
 <script>
     src="../js/search";
@@ -53,18 +55,22 @@
             </div>
         </div>  
         <!-- Header End -->
-        <% var i = 0 %>
+        <div class="w3-container ">
+            <% var i = 0 %>
         <%userList.forEach(user => {%>
+            <div class="w3-container w3-padding-32 w3-third ">
         <h2 id="title"><%= user.name %></h2>
         <h4>Usuario: <%= user.username %></h4>
         <p><b>Habilidades: </b><%= user.qualifications %></p>
         <p><b>Correo: </b><%= user.email %></p>
         <p><b>Rol: </b><%= user.role %></p>
-        <p><a href="/delete-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Borrar usuario</a></p>
-        <p><a href="/update-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Actualizar usuario</a></p>
+        <p><a href="/delete-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Borrar usuario</a> <a href="/update-user/<%= userList[i]._id%>" class="btn btn-primary" role="button" >Actualizar usuario</a></p>
         <% i = i+1; %>
+    </div>
 
         <% }) %>
+        <br><br>
+        </div>
 
         
 

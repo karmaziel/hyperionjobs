@@ -43,13 +43,18 @@
                 <a href="/about" class="nav-item nav-link">Sobre nosotros</a>
                 <a href="/job-list" class="nav-item nav-link">Trabajos</a>
                 <% if(loginstatus) { %>
-                <a href="/logout" class="nav-item nav-link">Cerrar sesion</a>
                 <a href="/profile" class="nav-item nav-link">Perfil</a>
+                <a href="/logout" class="nav-item nav-link">Cerrar sesion</a>
                 <% } else { %>
                 <a href="/login" class="nav-item nav-link">Iniciar sesión</a>
                 <% } %>
+                <% if(isAdmin) { %>
+                <a href="/users" class="nav-item nav-link">Panel de usuarios</a>
+                <% } %>
+
+
             </div>
-            <a href="/publishjob" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block" onclick="alertaLogin();">Publica un trabajo<i class="fa fa-arrow-right ms-3"></i></a>
+            <a href="/registro" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block" >Regístrate<i class="fa fa-arrow-right ms-3"></i></a>
         </div>
     </nav>
 

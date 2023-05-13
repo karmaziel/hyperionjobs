@@ -29,6 +29,8 @@
 
     <!-- Template Stylesheet -->
     <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
     <script>
         src="../js/alert"
@@ -62,27 +64,11 @@
             <div class="container">
                 <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Listado de Trabajos</h1>
                 <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.3s">
-                    <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
-                        <li class="nav-item">
-                            <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 active" data-bs-toggle="pill" href="#tab-1">
-                                <h6 class="mt-n1 mb-0">Destacados</h6>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="d-flex align-items-center text-start mx-3 pb-3" data-bs-toggle="pill" href="#tab-2">
-                                <h6 class="mt-n1 mb-0">Tiempo Completo</h6>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill" href="#tab-3">
-                                <h6 class="mt-n1 mb-0">Medio Tiempo</h6>
-                            </a>
-                        </li>
-                    </ul>
                     
                     <h1>Trabajos</h1>
                     <ul><% var i = 0 %>
                         <%jobsList.forEach(job => {%>
+                            <div class="w3-container"
                             <h2 id="title"><%= job.title %></h2>
                             <h4>Publicado el <%= job.publish_date %></h4>
                             <p><b>Descripción: </b><%= job.description %></p>
@@ -102,11 +88,11 @@
                                 <p><a href="/requests/<%= jobsList[i]._id%>" class="btn btn-primary" role="button" >Ver solicitudes</a></p>
                                 <p><a href="/apply-job/<%= jobsList[i]._id%>" class="btn btn-primary" role="button" >Aplica ahora</a></p>
                             <%}%>
+                            </div>
                             <br> <br> <!-- Salto de linea a modo de separador -->
                             <% i = i+1; %>
                         <%})%>
                     </ul>
-                            <a class="btn btn-primary py-3 px-5" href="">Mostrar más trabajos</a>
                         </div>
                     </div>
                 </div>
